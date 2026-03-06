@@ -32,6 +32,13 @@
   - [x] 收合時只顯示 emoji 圖示，展開時顯示圖示 + 文字標籤
   - [x] 未讀訊息角標在收合模式下以絕對定位顯示
   - [x] 監控狀態在收合模式下以點擊圓點切換
+- [x] **平台切換 + 對話列表**
+  - [x] 新增 `selectedPlatform` 狀態到 store.ts
+  - [x] 側邊欄頂部：平台標籤（蝦皮、Lazada、FB、LINE、全部）
+  - [x] 平台標籤顯示未讀數量角標
+  - [x] 中間區域：顯示所選平台的對話列表
+  - [x] 應用導航移到側邊欄底部（Dashboard、對話監控等）
+  - [x] ConversationMonitor 響應 selectedPlatform 過濾對話
 
 ## Current Structure
 

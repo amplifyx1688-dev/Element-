@@ -6,6 +6,7 @@ import {
   PlatformConfig,
   AutoReplySession,
   SystemStats,
+  Platform,
   DEFAULT_PLATFORMS,
   DEFAULT_RULES,
   SAMPLE_CONVERSATIONS,
@@ -22,6 +23,7 @@ export function useAutoReplyStore() {
   const [sessions, setSessions] = useState<AutoReplySession[]>(SAMPLE_CONVERSATIONS);
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [activeTab, setActiveTab] = useState<"dashboard" | "conversations" | "rules" | "platforms" | "rpa">("dashboard");
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform | "all">("all");
 
   const stats: SystemStats = {
     totalReplied: rules.reduce((sum, r) => sum + r.stats.triggered, 0),
@@ -183,6 +185,8 @@ export function useAutoReplyStore() {
     activeTab,
     setActiveTab,
     setIsMonitoring,
+    selectedPlatform,
+    setSelectedPlatform,
     togglePlatform,
     updatePlatform,
     toggleRule,

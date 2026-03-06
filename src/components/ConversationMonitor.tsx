@@ -9,20 +9,26 @@ interface ConversationMonitorProps {
 }
 
 export default function ConversationMonitor({ store }: ConversationMonitorProps) {
-  const { sessions, rules, markAsReplied, ignoreMessage, simulateIncoming } = store;
+  const { sessions, rules, markAsReplied, ignoreMessage, simulateIncoming, selectedPlatform } = store;
+  
+  // Filter by selected platform
+  const filteredSessions = selectedPlatform === "all"
+    ? sessions
+    : sessions.filter(s => s.platform === selectedPlatform);
+  
   const [selectedSession, setSelectedSession] = useState<string | null>(
-    sessions.find(s => s.unreadCount > 0)?.id || sessions[0]?.id || null
+    filteredSessions.find(s => s.unreadCount > 0)?.id || filteredSessions[0]?.id || null
   );
   const [editingReply, setEditingReply] = useState<{ msgId: string; text: string } | null>(null);
   const [filterStatus, setFilterStatus] = useState<"all" | "unread" | "active">("all");
 
-  const filteredSessions = sessions.filter(s => {
+  const finalSessions = filteredSessions.filter(s => {
     if (filterStatus === "unread") return s.unreadCount > 0;
     if (filterStatus === "active") return s.status === "active";
     return true;
   });
 
-  const currentSession = sessions.find(s => s.id === selectedSession);
+  const currentSession = filteredSessions.find(s => s.id === selectedSession);
 
   function getRuleName(ruleId: string) {
     return rules.find(r => r.id === ruleId)?.name || ruleId;
@@ -89,12 +95,12 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
 
         {/* Session List */}
         <div className="flex-1 overflow-y-auto">
-          {filteredSessions.length === 0 ? (
+          {finalSessions.length === 0 ? (
             <div className="p-6 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
               暫無對話
             </div>
           ) : (
-            filteredSessions.map(session => {
+            finalSessions.map(session => {
               const meta = PLATFORM_META[session.platform];
               const lastMsg = session.messages[session.messages.length - 1];
               const isSelected = selectedSession === session.id;
