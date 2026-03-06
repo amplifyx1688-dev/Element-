@@ -80,8 +80,17 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
 
   function handleOpenPlatform() {
     if (currentPlatform?.url) {
-      // 使用 window.location.href 導航，避免被瀏覽器屏蔽
-      window.location.href = currentPlatform.url;
+      // 使用 window.open 開新標籤頁
+      try {
+        const newWindow = window.open(currentPlatform.url, '_blank');
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+          // 如果彈出被阻止，嘗試使用 location
+          window.location.href = currentPlatform.url;
+        }
+      } catch (e) {
+        // 如果出錯，嘗試使用 location
+        window.location.href = currentPlatform.url;
+      }
     } else {
       alert("請先輸入平台網址");
     }
