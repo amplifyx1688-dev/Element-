@@ -312,7 +312,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                             {/* Sent Reply */}
                             {msg.sentReply && (
                               <div
-                                className="mt-3 p-3 rounded-lg"
+                                className="mt-3 p-3 rounded-lg text-sm"
                                 style={{ 
                                   background: "rgba(34,197,94,0.08)", 
                                   border: "1px solid rgba(34,197,94,0.2)" 
