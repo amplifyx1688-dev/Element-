@@ -12,7 +12,7 @@ export default function AppShell() {
   const store = useAutoReplyStore();
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "var(--bg-primary)" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "linear-gradient(135deg, #0d1117 0%, #111827 100%)" }}>
       <Sidebar store={store} />
       <main className="flex-1 overflow-hidden">
         {store.activeTab === "dashboard" && <div className="h-full overflow-y-auto"><Dashboard store={store} /></div>}

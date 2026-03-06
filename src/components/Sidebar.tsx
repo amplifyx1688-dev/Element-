@@ -19,11 +19,11 @@ export default function Sidebar({ store }: SidebarProps) {
   const totalUnread = sessions.reduce((sum, s) => sum + s.unreadCount, 0);
 
   return (
-    <aside className="w-64 flex-shrink-0 flex flex-col" style={{ background: "var(--bg-secondary)", borderRight: "1px solid var(--border-color)" }}>
+    <aside className="w-64 flex-shrink-0 flex flex-col sidebar-gradient">
       {/* Logo */}
       <div className="p-5 border-b" style={{ borderColor: "var(--border-color)" }}>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: "linear-gradient(135deg, #4f8ef7, #a855f7)" }}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: "linear-gradient(135deg, #1f6feb, #bc8cff)" }}>
             🤖
           </div>
           <div>
@@ -62,11 +62,10 @@ export default function Sidebar({ store }: SidebarProps) {
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all"
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === item.id ? "nav-active" : ""}`}
             style={{
-              background: activeTab === item.id ? "rgba(79, 142, 247, 0.15)" : "transparent",
               color: activeTab === item.id ? "var(--accent-blue)" : "var(--text-secondary)",
-              border: activeTab === item.id ? "1px solid rgba(79, 142, 247, 0.3)" : "1px solid transparent",
+              border: activeTab === item.id ? undefined : "1px solid transparent",
             }}
           >
             <span className="text-base">{item.icon}</span>
