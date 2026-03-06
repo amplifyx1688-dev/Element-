@@ -90,102 +90,6 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
 
   return (
     <div className="flex h-full animate-fade-in" style={{ height: "calc(100vh - 0px)" }}>
-      {/* Left Side - Contact List */}
-      <div 
-        className="flex flex-col border-r"
-        style={{ 
-          borderColor: "var(--border-color)",
-          width: "320px",
-          background: "linear-gradient(180deg, rgba(13,17,23,0.95) 0%, rgba(22,27,34,0.98) 100%)",
-        }}
-      >
-        {/* Contact List Header */}
-        <div 
-          className="p-4 border-b"
-          style={{ 
-            borderColor: "var(--border-color)",
-            background: "linear-gradient(180deg, rgba(31,111,235,0.08) 0%, transparent 100%)",
-          }}
-        >
-          <h2 className="text-lg font-semibold gradient-text">訊息對話</h2>
-          <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>
-            {totalUnread} 則未讀訊息
-          </p>
-        </div>
-
-        {/* Contact List */}
-        <div className="flex-1 overflow-y-auto">
-          {filteredSessions.map((session) => (
-            <div
-              key={session.id}
-              onClick={() => setSelectedSession(session)}
-              className="p-3 mx-2 my-1 rounded-xl cursor-pointer transition-all duration-200 group"
-              style={{ 
-                background: currentSession?.id === session.id 
-                  ? "linear-gradient(135deg, rgba(31,111,235,0.15) 0%, rgba(56,139,253,0.08) 100%)"
-                  : "transparent",
-                border: currentSession?.id === session.id 
-                  ? "1px solid rgba(31,111,235,0.3)"
-                  : "1px solid transparent",
-              }}
-              onMouseEnter={(e) => {
-                if (currentSession?.id !== session.id) {
-                  e.currentTarget.style.background = "rgba(33,38,45,0.6)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (currentSession?.id !== session.id) {
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
-            >
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div 
-                  className={`w-11 h-11 rounded-full bg-gradient-to-br flex items-center justify-center text-white text-sm font-semibold shadow-lg ${getColorFromName(session.customerName)}`}
-                >
-                  {getInitials(session.customerName)}
-                </div>
-                
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span 
-                      className="font-medium text-sm truncate"
-                      style={{ color: "var(--text-primary)" }}
-                    >
-                      {session.customerName}
-                    </span>
-                    <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
-                      {formatTime(session.messages[session.messages.length - 1]?.timestamp || "")}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between mt-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs">{PLATFORM_META[session.platform].icon}</span>
-                      <span className="text-xs truncate" style={{ color: "var(--text-secondary)" }}>
-                        {session.messages[session.messages.length - 1]?.content?.substring(0, 25) || "尚無訊息"}...
-                      </span>
-                    </div>
-                    {session.unreadCount > 0 && (
-                      <span 
-                        className="min-w-[18px] h-[18px] px-1 rounded-full text-xs font-medium flex items-center justify-center"
-                        style={{ 
-                          background: "var(--accent-blue)",
-                          color: "white",
-                        }}
-                      >
-                        {session.unreadCount}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Center - Conversation Detail */}
       <div className="flex-1 flex flex-col min-w-0" style={{ background: "var(--bg-primary)" }}>
         {currentSession ? (
@@ -464,7 +368,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                 💬
               </div>
               <p className="text-lg font-medium" style={{ color: "var(--text-primary)" }}>選擇一個對話</p>
-              <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>點擊左側的對話列表開始</p>
+              <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>目前沒有對話</p>
             </div>
           </div>
         )}
