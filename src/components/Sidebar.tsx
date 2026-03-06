@@ -302,6 +302,127 @@ export default function Sidebar({ store }: SidebarProps) {
             </span>
           </div>
         )}
+
+        {/* Conversation Items - 對話列表 */}
+        {!collapsed && filteredSessions.length > 0 && (
+          <div style={{ padding: "4px 8px" }}>
+            {filteredSessions.map((session) => {
+              const meta = PLATFORM_META[session.platform];
+              const isActive = store.selectedSession?.id === session.id;
+              
+              return (
+                <button
+                  key={session.id}
+                  onClick={() => store.setSelectedSession(session)}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "8px",
+                    marginBottom: "2px",
+                    borderRadius: "6px",
+                    border: isActive ? "1px solid var(--accent-blue)" : "1px solid transparent",
+                    background: isActive ? "rgba(88, 166, 255, 0.1)" : "transparent",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {/* Avatar */}
+                  <div
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      background: `${meta.color}22`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "14px",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {meta.icon}
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span 
+                        style={{ 
+                          fontSize: "12px", 
+                          fontWeight: 600, 
+                          color: "var(--text-primary)",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {session.customerName}
+                      </span>
+                      <span style={{ fontSize: "10px", color: "var(--text-muted)", flexShrink: 0 }}>
+                        {formatTime(session.lastActivity)}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2px" }}>
+                      <span 
+                        style={{ 
+                          fontSize: "11px", 
+                          color: "var(--text-secondary)",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          maxWidth: "140px",
+                        }}
+                      >
+                        {session.messages[session.messages.length - 1]?.content || "尚無訊息"}
+                      </span>
+                      {session.unreadCount > 0 && (
+                        <span
+                          style={{
+                            background: "var(--accent-red)",
+                            color: "white",
+                            fontSize: "9px",
+                            fontWeight: "bold",
+                            padding: "1px 5px",
+                            borderRadius: "8px",
+                            minWidth: "16px",
+                            textAlign: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {session.unreadCount}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!collapsed && filteredSessions.length === 0 && (
+          <div style={{ padding: "20px", textAlign: "center" }}>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+              暫無對話
+            </span>
+          </div>
+        )}
+
+        {/* Collapsed: show session count */}
+        {collapsed && (
+          <div style={{ padding: "8px 0", textAlign: "center" }}>
+            <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>
+              {filteredSessions.length}
+            </div>
+            <div style={{ fontSize: "9px", color: "var(--text-muted)" }}>
+              對話
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Monitoring Status */}

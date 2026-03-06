@@ -21,6 +21,7 @@ export function useAutoReplyStore() {
   const [platforms, setPlatforms] = useState<PlatformConfig[]>(DEFAULT_PLATFORMS);
   const [rules, setRules] = useState<KeywordRule[]>(DEFAULT_RULES);
   const [sessions, setSessions] = useState<AutoReplySession[]>(SAMPLE_CONVERSATIONS);
+  const [selectedSession, setSelectedSession] = useState<AutoReplySession | null>(SAMPLE_CONVERSATIONS[0] || null);
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [activeTab, setActiveTab] = useState<"dashboard" | "conversations" | "rules" | "platforms" | "rpa">("dashboard");
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | "all">("all");
@@ -180,6 +181,8 @@ export function useAutoReplyStore() {
     platforms,
     rules,
     sessions,
+    selectedSession,
+    setSelectedSession,
     stats,
     isMonitoring,
     activeTab,
