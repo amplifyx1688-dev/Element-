@@ -111,7 +111,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 border-b" style={{ borderColor: "var(--border-color)" }}>
               {currentSession.messages.map((msg, idx) => {
                 const prevMsg = idx > 0 ? currentSession.messages[idx - 1] : null;
                 const showDate = !prevMsg || formatDate(msg.timestamp) !== formatDate(prevMsg.timestamp);
@@ -367,9 +367,9 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                     e.currentTarget.style.borderColor = "rgba(79,142,247,0.15)";
                   }}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
                     <span 
-                      className="text-xs px-2 py-0.5 rounded-full"
+                      className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
                       style={{ 
                         background: "rgba(79,142,247,0.2)",
                         color: "var(--accent-blue)",
@@ -377,16 +377,10 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                     >
                       {phrase.category}
                     </span>
-                    <span 
-                      className="text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      點擊使用
-                    </span>
+                    <p className="text-sm truncate" style={{ color: "var(--text-primary)" }}>
+                      {phrase.text}
+                    </p>
                   </div>
-                  <p className="text-sm truncate" style={{ color: "var(--text-primary)" }}>
-                    {phrase.text}
-                  </p>
                 </button>
               ))}
             </div>
