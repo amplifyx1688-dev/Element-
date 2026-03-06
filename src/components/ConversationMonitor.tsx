@@ -24,7 +24,7 @@ interface ConversationMonitorProps {
 }
 
 export default function ConversationMonitor({ store }: ConversationMonitorProps) {
-  const { sessions, rules, markAsReplied, ignoreMessage, simulateIncoming, selectedPlatform, selectedSession, setSelectedSession } = store;
+  const { sessions, rules, markAsReplied, ignoreMessage, simulateIncoming, selectedPlatform, selectedSession, setSelectedSession, sendMessage } = store;
   
   // Filter by selected platform
   const filteredSessions = selectedPlatform === "all"
@@ -35,6 +35,8 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
   const [quickPhrasesCollapsed, setQuickPhrasesCollapsed] = useState(false);
   const [pinnedQuickPhrases, setPinnedQuickPhrases] = useState(false);
   const [quickPhraseSearch, setQuickPhraseSearch] = useState("");
+  const [pendingMessage, setPendingMessage] = useState<string>("");
+  const [showMessageInput, setShowMessageInput] = useState(false);
 
   // Use selectedSession from store
   const currentSession = selectedSession || filteredSessions[0] || null;
@@ -62,6 +64,15 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
   function handleSendReply(sessionId: string, messageId: string, reply: string) {
     markAsReplied(sessionId, messageId, reply);
     setEditingReply(null);
+  }
+
+  function handleQuickPhraseClick(phrase: QuickPhrase) {
+    if (!currentSession) {
+      alert("請先選擇一個對話");
+      return;
+    }
+    // 發送快捷語到對話
+    sendMessage(currentSession.id, phrase.text);
   }
 
   const totalUnread = sessions.reduce((s, c) => s + c.unreadCount, 0);
@@ -466,6 +477,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                     background: "linear-gradient(135deg, rgba(79,142,247,0.06) 0%, rgba(79,142,247,0.02) 100%)",
                     border: "1px solid rgba(79,142,247,0.12)",
                   }}
+                  onClick={() => handleQuickPhraseClick(phrase)}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = "linear-gradient(135deg, rgba(79,142,247,0.15) 0%, rgba(79,142,247,0.08) 100%)";
                     e.currentTarget.style.borderColor = "rgba(79,142,247,0.35)";

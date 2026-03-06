@@ -69,6 +69,11 @@ export function useAutoReplyStore() {
     setRules(prev => prev.filter(r => r.id !== id));
   }, []);
 
+  // Platform actions
+  const addPlatform = useCallback((platform: PlatformConfig) => {
+    setPlatforms(prev => [...prev, platform]);
+  }, []);
+
   // Session actions
   const markAsReplied = useCallback((sessionId: string, messageId: string, reply: string) => {
     setSessions(prev =>
@@ -97,6 +102,31 @@ export function useAutoReplyStore() {
           messages: s.messages.map(m =>
             m.id === messageId ? { ...m, status: "ignored" as const } : m
           ),
+        };
+      })
+    );
+  }, []);
+
+  // Send a new message to a session
+  const sendMessage = useCallback((sessionId: string, content: string) => {
+    const newMessage = {
+      id: `m_${Date.now()}`,
+      platform: "custom" as Platform,
+      platformName: "手動發送",
+      sender: "系統",
+      content,
+      timestamp: new Date().toISOString(),
+      status: "replied" as const,
+      isIncoming: false,
+      sentReply: content,
+    };
+    setSessions(prev =>
+      prev.map(s => {
+        if (s.id !== sessionId) return s;
+        return {
+          ...s,
+          messages: [...s.messages, newMessage],
+          lastActivity: newMessage.timestamp,
         };
       })
     );
@@ -192,12 +222,14 @@ export function useAutoReplyStore() {
     setSelectedPlatform,
     togglePlatform,
     updatePlatform,
+    addPlatform,
     toggleRule,
     updateRule,
     addRule,
     deleteRule,
     markAsReplied,
     ignoreMessage,
+    sendMessage,
     simulateIncoming,
   };
 }

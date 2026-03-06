@@ -66,8 +66,24 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
       color: meta.color,
       icon: meta.icon,
     };
-    // In a real app, we'd call addPlatform
+    store.addPlatform(newPlatform);
     setShowAddModal(false);
+  }
+
+  function handleTestSelectors() {
+    if (!currentPlatform?.url) {
+      alert("請先輸入平台網址");
+      return;
+    }
+    alert(`正在測試 ${currentPlatform.name} 的 CSS 選擇器...\n\n這是模擬功能，實際應用中會：\n1. 打開平台網頁\n2. 驗證選擇器是否有效\n3. 回報測試結果`);
+  }
+
+  function handleOpenPlatform() {
+    if (currentPlatform?.url) {
+      window.open(currentPlatform.url, "_blank");
+    } else {
+      alert("請先輸入平台網址");
+    }
   }
 
   return (
@@ -301,10 +317,10 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
             <div className="card p-5">
               <h3 className="font-semibold text-sm mb-3" style={{ color: "var(--text-primary)" }}>測試連接</h3>
               <div className="flex gap-3">
-                <button className="btn-primary text-sm">
+                <button className="btn-primary text-sm" onClick={handleTestSelectors}>
                   🔍 測試選擇器
                 </button>
-                <button className="btn-secondary text-sm">
+                <button className="btn-secondary text-sm" onClick={handleOpenPlatform}>
                   🌐 開啟平台網頁
                 </button>
               </div>
