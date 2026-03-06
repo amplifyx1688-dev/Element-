@@ -94,35 +94,41 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
     
     // 嘗試打開平台網頁
     try {
-      const newWindow = window.open(currentPlatform.url, '_blank');
-      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-        // 如果彈出被阻止， fallback
-        window.location.href = currentPlatform.url;
-        setTestResult(prev => prev + "\n\n⚠️ 彈出窗口被阻止，頁面已跳轉");
-      } else {
-        setTestResult(prev => prev + "\n\n✅ 平台網頁已打開，請驗證選擇器是否正確");
-      }
+      // 先嘗試複製網址到剪貼簿
+      navigator.clipboard.writeText(currentPlatform.url).then(() => {
+        setTestResult(prev => prev + "\n\n✅ 網址已複製到剪貼簿，請在瀏覽器新分頁貼上並打開驗證");
+      }).catch(() => {
+        // 如果剪貼簿失敗，嘗試打開
+        const newWindow = window.open(currentPlatform.url, '_blank');
+        if (!newWindow || newWindow.closed) {
+          setTestResult(prev => prev + "\n\n⚠️ 無法自動打開，請手動在瀏覽器新分頁輸入網址驗證");
+        } else {
+          setTestResult(prev => prev + "\n\n✅ 平台網頁已打開，請驗證選擇器是否正確");
+        }
+      });
     } catch (e) {
-      window.location.href = currentPlatform.url;
-      setTestResult(prev => prev + "\n\n⚠️ 錯誤，已跳轉到平台網頁");
+      setTestResult(prev => prev + "\n\n⚠️ 無法自動打開，請手動在瀏覽器新分頁輸入網址驗證");
     }
   }
 
   function handleOpenPlatform() {
     if (currentPlatform?.url) {
-      // 使用 window.open 開新標籤頁
+      // 嘗試複製網址到剪貼簿
       try {
-        const newWindow = window.open(currentPlatform.url, '_blank');
-        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-          // 如果彈出被阻止，嘗試使用 location
-          window.location.href = currentPlatform.url;
-        }
+        navigator.clipboard.writeText(currentPlatform.url).then(() => {
+          setTestResult("✅ 網址已複製到剪貼簿，請自行在瀏覽器貼上並開啟\n\n" + currentPlatform.url);
+        }).catch(() => {
+          // 如果剪貼簿失敗，嘗試打開
+          const newWindow = window.open(currentPlatform.url, '_blank');
+          if (!newWindow || newWindow.closed) {
+            setTestResult("⚠️ 無法自動打開，請手動在瀏覽器輸入：\n" + currentPlatform.url);
+          }
+        });
       } catch (e) {
-        // 如果出錯，嘗試使用 location
-        window.location.href = currentPlatform.url;
+        setTestResult("⚠️ 無法自動打開，請手動在瀏覽器輸入：\n" + currentPlatform.url);
       }
     } else {
-      alert("請先輸入平台網址");
+      setTestResult("請先輸入平台網址");
     }
   }
 
