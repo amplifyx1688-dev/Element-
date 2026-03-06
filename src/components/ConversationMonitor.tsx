@@ -201,9 +201,9 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                             <div
                               className="p-4 rounded-2xl rounded-tl-sm text-sm shadow-md"
                               style={{ 
-                                background: "linear-gradient(135deg, #1c2333 0%, #21262d 100%)", 
+                                background: "linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.1) 100%)", 
                                 color: "var(--text-primary)", 
-                                border: "1px solid var(--border-color)",
+                                border: "1px solid rgba(99,102,241,0.3)",
                               }}
                             >
                               {msg.content}
@@ -289,19 +289,19 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                                         className="btn-primary text-xs px-4 py-2 flex items-center gap-1.5"
                                         onClick={() => handleSendReply(currentSession.id, msg.id, msg.suggestedReply!)}
                                       >
-                                        ✓ 直接發送
+                                        💬 發送
                                       </button>
                                       <button
                                         className="btn-secondary text-xs px-4 py-2 flex items-center gap-1.5"
                                         onClick={() => setEditingReply({ msgId: msg.id, text: msg.suggestedReply! })}
                                       >
-                                        ✏️ 編輯
+                                        📝 編輯
                                       </button>
                                       <button
                                         className="btn-danger text-xs px-4 py-2"
                                         onClick={() => ignoreMessage(currentSession.id, msg.id)}
                                       >
-                                        忽略
+                                        🚧 忽略
                                       </button>
                                     </div>
                                   </>
@@ -340,9 +340,9 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                           <div
                             className="p-4 rounded-2xl rounded-tr-sm text-sm shadow-md"
                             style={{ 
-                              background: "linear-gradient(135deg, rgba(31,111,235,0.2) 0%, rgba(56,139,253,0.15) 100%)", 
+                              background: "linear-gradient(135deg, rgba(34,197,94,0.15) 0%, rgba(63,185,80,0.1) 100%)", 
                               color: "var(--text-primary)", 
-                              border: "1px solid rgba(31,111,235,0.3)" 
+                              border: "1px solid rgba(34,197,94,0.3)" 
                             }}
                           >
                             {msg.content}
