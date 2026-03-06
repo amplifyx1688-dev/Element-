@@ -51,6 +51,12 @@
   - [x] 快捷語面板可釘選、收合、展開
   - [x] 快捷語搜尋功能
   - [x] 快捷語分類顯示（問候、訂單、物流、抱歉、優惠）
+- [x] **修復按鈕功能**
+  - [x] PlatformSettings 添加平台按鈕現可實際添加平台
+  - [x] ConversationMonitor 快捷語按鈕現有點擊事件
+  - [x] PlatformSettings 測試連接和開啟平台網頁按鈕功能修復
+- [x] **修復網頁被屏蔽問題**
+  - [x] 使用 a 標籤模擬點擊打開網頁，取代 window.open() 避免被瀏覽器屏蔽
 
 ## Current Structure
 
