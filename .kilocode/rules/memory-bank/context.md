@@ -39,6 +39,9 @@
   - [x] 中間區域：顯示所選平台的對話列表
   - [x] 應用導航移到側邊欄底部（Dashboard、對話監控等）
   - [x] ConversationMonitor 響應 selectedPlatform 過濾對話
+- [x] **對話監控頁面簡化**
+  - [x] 移除買家 "Amy Chen" 和 "買家 阿花" 樣本資料
+  - [x] 移除篩選按鈕（全部、未讀、進行中）
 
 ## Current Structure
 

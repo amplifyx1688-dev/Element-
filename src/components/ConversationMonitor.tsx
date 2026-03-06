@@ -20,13 +20,6 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
     filteredSessions.find(s => s.unreadCount > 0)?.id || filteredSessions[0]?.id || null
   );
   const [editingReply, setEditingReply] = useState<{ msgId: string; text: string } | null>(null);
-  const [filterStatus, setFilterStatus] = useState<"all" | "unread" | "active">("all");
-
-  const finalSessions = filteredSessions.filter(s => {
-    if (filterStatus === "unread") return s.unreadCount > 0;
-    if (filterStatus === "active") return s.status === "active";
-    return true;
-  });
 
   const currentSession = filteredSessions.find(s => s.id === selectedSession);
 
@@ -74,33 +67,16 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
               🧪 模擬
             </button>
           </div>
-          {/* Filter */}
-          <div className="flex gap-1">
-            {(["all", "unread", "active"] as const).map(f => (
-              <button
-                key={f}
-                onClick={() => setFilterStatus(f)}
-                className="flex-1 text-xs py-1.5 rounded-lg font-medium transition-all"
-                style={{
-                  background: filterStatus === f ? "rgba(79,142,247,0.15)" : "transparent",
-                  color: filterStatus === f ? "var(--accent-blue)" : "var(--text-secondary)",
-                  border: filterStatus === f ? "1px solid rgba(79,142,247,0.3)" : "1px solid transparent",
-                }}
-              >
-                {f === "all" ? "全部" : f === "unread" ? "未讀" : "進行中"}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Session List */}
         <div className="flex-1 overflow-y-auto">
-          {finalSessions.length === 0 ? (
+          {filteredSessions.length === 0 ? (
             <div className="p-6 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
               暫無對話
             </div>
           ) : (
-            finalSessions.map(session => {
+            filteredSessions.map(session => {
               const meta = PLATFORM_META[session.platform];
               const lastMsg = session.messages[session.messages.length - 1];
               const isSelected = selectedSession === session.id;
