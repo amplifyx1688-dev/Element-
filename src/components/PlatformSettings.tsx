@@ -80,14 +80,8 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
 
   function handleOpenPlatform() {
     if (currentPlatform?.url) {
-      // 使用 a 标签模拟点击打开网页，避免被浏览器屏蔽
-      const link = document.createElement('a');
-      link.href = currentPlatform.url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // 使用 window.location.href 導航，避免被瀏覽器屏蔽
+      window.location.href = currentPlatform.url;
     } else {
       alert("請先輸入平台網址");
     }
