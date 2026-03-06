@@ -70,30 +70,94 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
 
   return (
     <div className="flex h-full animate-fade-in" style={{ height: "calc(100vh - 0px)" }}>
-      {/* Conversation Detail - Left Side */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Header with 離線模式 Status */}
-        <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: "var(--border-color)" }}>
-          <div className="flex items-center gap-3">
-            <h2 className="font-semibold" style={{ color: "var(--text-primary)" }}>
-              對話監控
+      {/* Left Side - Conversation List + Detail */}
+      <div className="flex-1 flex min-w-0">
+        {/* Contact List Section */}
+        <div className="w-72 border-r flex flex-col" style={{ borderColor: "var(--border-color)" }}>
+          {/* Header */}
+          <div className="p-4 border-b" style={{ borderColor: "var(--border-color)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <h2 className="font-semibold" style={{ color: "var(--text-primary)" }}>
+                對話監控
+              </h2>
               {totalUnread > 0 && (
                 <span
-                  className="ml-2 text-xs font-bold px-1.5 py-0.5 rounded-full"
+                  className="text-xs font-bold px-1.5 py-0.5 rounded-full"
                   style={{ background: "var(--accent-red)", color: "white" }}
                 >
                   {totalUnread}
                 </span>
               )}
-            </h2>
-            <span className="tag tag-red">
+            </div>
+            <span className="tag tag-red text-xs">
               ⚫ 離線模式
             </span>
           </div>
-          <button onClick={simulateIncoming} className="btn-secondary text-xs px-2 py-1">
-            🧪 模擬
-          </button>
+          
+          {/* Conversation List */}
+          <div className="flex-1 overflow-y-auto">
+            {filteredSessions.length === 0 ? (
+              <div className="p-4 text-center">
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>尚無對話</p>
+              </div>
+            ) : (
+              filteredSessions.map(session => (
+                <div
+                  key={session.id}
+                  className="p-3 border-b cursor-pointer transition-all"
+                  style={{
+                    borderColor: "var(--border-color)",
+                    background: selectedSession === session.id ? "rgba(79,142,247,0.1)" : "transparent",
+                  }}
+                  onClick={() => setSelectedSession(session.id)}
+                  onMouseEnter={(e) => {
+                    if (selectedSession !== session.id) {
+                      e.currentTarget.style.background = "var(--bg-secondary)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedSession !== session.id) {
+                      e.currentTarget.style.background = "transparent";
+                    }
+                  }}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+                      style={{
+                        background: `${PLATFORM_META[session.platform].color}22`,
+                        border: `1px solid ${PLATFORM_META[session.platform].color}44`,
+                      }}
+                    >
+                      {PLATFORM_META[session.platform].icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className="font-medium text-sm truncate" style={{ color: "var(--text-primary)" }}>
+                          {session.customerName}
+                        </span>
+                        {session.unreadCount > 0 && (
+                          <span
+                            className="text-xs font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                            style={{ background: "var(--accent-red)", color: "white" }}
+                          >
+                            {session.unreadCount}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs truncate" style={{ color: "var(--text-secondary)" }}>
+                        {session.messages[session.messages.length - 1]?.content?.substring(0, 30) || "尚無訊息"}...
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
+
+        {/* Conversation Detail */}
+        <div className="flex-1 flex flex-col min-w-0">
         {currentSession ? (
           <>
             {/* Conversation Header */}
@@ -129,7 +193,15 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
               </div>
             </div>
 
-            {/* Messages */}
+            {/* Messages Header with Simulate Button */}
+            <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: "var(--border-color)" }}>
+              <div className="flex items-center gap-2">
+                <span className="text-sm" style={{ color: "var(--text-secondary)" }}>對話詳情</span>
+              </div>
+              <button onClick={simulateIncoming} className="btn-secondary text-xs px-2 py-1">
+                🧪 模擬
+              </button>
+            </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {currentSession.messages.map((msg, idx) => {
                 const prevMsg = idx > 0 ? currentSession.messages[idx - 1] : null;
@@ -301,6 +373,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {/* Quick Phrases Panel - Right Side */}
