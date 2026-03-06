@@ -111,7 +111,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 border-t" style={{ borderColor: "var(--border-color)" }}>
               {currentSession.messages.map((msg, idx) => {
                 const prevMsg = idx > 0 ? currentSession.messages[idx - 1] : null;
                 const showDate = !prevMsg || formatDate(msg.timestamp) !== formatDate(prevMsg.timestamp);
@@ -384,7 +384,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                       點擊使用
                     </span>
                   </div>
-                  <p className="text-sm" style={{ color: "var(--text-primary)" }}>
+                  <p className="text-sm truncate" style={{ color: "var(--text-primary)" }}>
                     {phrase.text}
                   </p>
                 </button>
