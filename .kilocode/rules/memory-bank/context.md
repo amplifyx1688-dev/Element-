@@ -25,6 +25,13 @@
   - [x] 平台設定（src/components/PlatformSettings.tsx）
   - [x] RPA 自動化腳本（src/components/RPAAutomation.tsx）
   - [x] 主應用殼層（src/components/AppShell.tsx）
+- [x] **可收合側邊欄 + 頂部應用切換按鈕**
+  - [x] Sidebar 自管理 `collapsed` 狀態（useState）
+  - [x] 展開寬度 256px / 收合寬度 64px，`transition: width 0.3s ease`
+  - [x] 頂部 ◀/▶ 切換按鈕
+  - [x] 收合時只顯示 emoji 圖示，展開時顯示圖示 + 文字標籤
+  - [x] 未讀訊息角標在收合模式下以絕對定位顯示
+  - [x] 監控狀態在收合模式下以點擊圓點切換
 
 ## Current Structure
 
