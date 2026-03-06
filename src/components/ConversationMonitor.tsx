@@ -104,18 +104,13 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                 >
                   {currentSession.status === "active" ? "進行中" : currentSession.status === "waiting" ? "等待中" : "已解決"}
                 </span>
+                <button onClick={simulateIncoming} className="btn-secondary text-xs px-2 py-1">
+                  🧪 模擬
+                </button>
               </div>
             </div>
 
-            {/* Messages Header with Simulate Button */}
-            <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: "var(--border-color)" }}>
-              <div className="flex items-center gap-2">
-                <span className="text-sm" style={{ color: "var(--text-secondary)" }}>對話詳情</span>
-              </div>
-              <button onClick={simulateIncoming} className="btn-secondary text-xs px-2 py-1">
-                🧪 模擬
-              </button>
-            </div>
+            {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {currentSession.messages.map((msg, idx) => {
                 const prevMsg = idx > 0 ? currentSession.messages[idx - 1] : null;
