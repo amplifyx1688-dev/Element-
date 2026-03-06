@@ -1,10 +1,10 @@
-# Active Context: Next.js Starter Template
+# Active Context: AutoReply Pro - 跨平台自動化應答系統
 
 ## Current State
 
-**Template Status**: ✅ Ready for development
+**Project Status**: ✅ AutoReply Pro 完整系統已建立
 
-The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. It's ready for AI-assisted expansion to build any type of application.
+已從 Next.js 基礎模板擴展為完整的跨平台自動化應答系統，靈感來自 "Helloworld跨境屯商助手"，並加入了自動分析未讀訊息的功能。
 
 ## Recently Completed
 
@@ -14,74 +14,62 @@ The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. I
 - [x] ESLint configuration
 - [x] Memory bank documentation
 - [x] Recipe system for common features
+- [x] **AutoReply Pro 完整系統**
+  - [x] 深色主題 UI 設計系統（globals.css）
+  - [x] 資料類型定義（src/lib/types.ts）
+  - [x] 狀態管理 Store（src/lib/store.ts）
+  - [x] 側邊欄導航（src/components/Sidebar.tsx）
+  - [x] 總覽儀表板（src/components/Dashboard.tsx）
+  - [x] 對話監控（src/components/ConversationMonitor.tsx）
+  - [x] 關鍵字規則管理（src/components/KeywordRules.tsx）
+  - [x] 平台設定（src/components/PlatformSettings.tsx）
+  - [x] RPA 自動化腳本（src/components/RPAAutomation.tsx）
+  - [x] 主應用殼層（src/components/AppShell.tsx）
 
 ## Current Structure
 
 | File/Directory | Purpose | Status |
 |----------------|---------|--------|
-| `src/app/page.tsx` | Home page | ✅ Ready |
-| `src/app/layout.tsx` | Root layout | ✅ Ready |
-| `src/app/globals.css` | Global styles | ✅ Ready |
+| `src/app/page.tsx` | 主頁面（載入 AppShell） | ✅ Ready |
+| `src/app/layout.tsx` | Root layout（中文標題） | ✅ Ready |
+| `src/app/globals.css` | 深色主題設計系統 | ✅ Ready |
+| `src/lib/types.ts` | 所有 TypeScript 類型定義 | ✅ Ready |
+| `src/lib/store.ts` | React 狀態管理 Hook | ✅ Ready |
+| `src/components/AppShell.tsx` | 主應用殼層（路由切換） | ✅ Ready |
+| `src/components/Sidebar.tsx` | 側邊欄導航 + 監控開關 | ✅ Ready |
+| `src/components/Dashboard.tsx` | 總覽儀表板 + 統計 | ✅ Ready |
+| `src/components/ConversationMonitor.tsx` | 對話監控 + 回覆操作 | ✅ Ready |
+| `src/components/KeywordRules.tsx` | 關鍵字規則 CRUD | ✅ Ready |
+| `src/components/PlatformSettings.tsx` | 平台 CSS 選擇器設定 | ✅ Ready |
+| `src/components/RPAAutomation.tsx` | RPA 腳本生成 + 說明 | ✅ Ready |
 | `.kilocode/` | AI context & recipes | ✅ Ready |
 
-## Current Focus
+## System Features
 
-The template is ready. Next steps depend on user requirements:
+### 核心功能
+1. **自動偵測對話窗口** - 透過 CSS 選擇器監控目標平台的訊息列表
+2. **自動分析上下文** - 關鍵字匹配引擎（完全/包含/正則/模糊）
+3. **自動化關鍵字回應** - 三種模式：自動發送、建議回覆、手動回覆
 
-1. What type of application to build
-2. What features are needed
-3. Design/branding preferences
+### 支援平台
+- 蝦皮購物（Shopee）
+- Lazada
+- Tokopedia
+- Facebook Messenger
+- Instagram
+- LINE Official
+- WhatsApp
+- Telegram
+- 自訂平台（任意網頁）
 
-## Quick Start Guide
-
-### To add a new page:
-
-Create a file at `src/app/[route]/page.tsx`:
-```tsx
-export default function NewPage() {
-  return <div>New page content</div>;
-}
-```
-
-### To add components:
-
-Create `src/components/` directory and add components:
-```tsx
-// src/components/ui/Button.tsx
-export function Button({ children }: { children: React.ReactNode }) {
-  return <button className="px-4 py-2 bg-blue-600 text-white rounded">{children}</button>;
-}
-```
-
-### To add a database:
-
-Follow `.kilocode/recipes/add-database.md`
-
-### To add API routes:
-
-Create `src/app/api/[route]/route.ts`:
-```tsx
-import { NextResponse } from "next/server";
-
-export async function GET() {
-  return NextResponse.json({ message: "Hello" });
-}
-```
-
-## Available Recipes
-
-| Recipe | File | Use Case |
-|--------|------|----------|
-| Add Database | `.kilocode/recipes/add-database.md` | Data persistence with Drizzle + SQLite |
-
-## Pending Improvements
-
-- [ ] Add more recipes (auth, email, etc.)
-- [ ] Add example components
-- [ ] Add testing setup recipe
+### RPA 實現方式
+- **控制台注入**：在目標網頁 F12 貼上腳本執行
+- **Tampermonkey**：瀏覽器擴充功能自動執行
+- **Puppeteer/Playwright**：Node.js 後端自動化
 
 ## Session History
 
 | Date | Changes |
 |------|---------|
 | Initial | Template created with base setup |
+| 2026-03-06 | 建立完整 AutoReply Pro 跨平台自動化應答系統 |
