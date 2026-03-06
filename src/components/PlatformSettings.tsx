@@ -80,7 +80,14 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
 
   function handleOpenPlatform() {
     if (currentPlatform?.url) {
-      window.open(currentPlatform.url, "_blank");
+      // 使用 a 标签模拟点击打开网页，避免被浏览器屏蔽
+      const link = document.createElement('a');
+      link.href = currentPlatform.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } else {
       alert("請先輸入平台網址");
     }
