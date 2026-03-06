@@ -34,6 +34,15 @@ export default function Sidebar({ store }: SidebarProps) {
   // Get enabled platforms only
   const enabledPlatforms = platforms.filter(p => p.enabled);
   
+  // Data flow:
+  // 1. RPA scripts monitor target platforms (Shopee, Lazada, FB, LINE, etc.)
+  // 2. Extract conversation data from DOM (customer name, last message, unread count)
+  // 3. Call setSessions() to update the store with new conversation data
+  // 4. Sidebar automatically filters and displays conversations by selectedPlatform
+  //
+  // For now, using SAMPLE_CONVERSATIONS as demo data.
+  // Real implementation would connect to RPA automation or API.
+
   // Filter sessions by selected platform
   const filteredSessions = selectedPlatform === "all" 
     ? sessions 
@@ -272,6 +281,27 @@ export default function Sidebar({ store }: SidebarProps) {
 
       {/* Conversation List - 對話列表 */}
       <div className="flex-1 overflow-y-auto" style={{ borderBottom: "1px solid var(--border-color)" }}>
+        {/* Data source indicator - 數據來源指示器 */}
+        {!collapsed && (
+          <div 
+            className="flex items-center gap-2 px-3 py-2 text-xs"
+            style={{ 
+              borderBottom: "1px solid var(--border-color)",
+              background: isMonitoring ? "rgba(34, 197, 94, 0.08)" : "rgba(107, 114, 128, 0.08)"
+            }}
+          >
+            <span 
+              className="w-2 h-2 rounded-full animate-pulse"
+              style={{ background: isMonitoring ? "#22c55e" : "#6b7280" }}
+            />
+            <span style={{ color: isMonitoring ? "#22c55e" : "var(--text-secondary)" }}>
+              {isMonitoring ? "即時監控中" : "離線模式"}
+            </span>
+            <span style={{ color: "var(--text-muted)", marginLeft: "auto" }}>
+              {filteredSessions.length} 對話
+            </span>
+          </div>
+        )}
         {!collapsed && (
           <div className="px-3 py-2">
             <div className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
