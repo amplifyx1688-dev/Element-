@@ -70,12 +70,42 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
     setShowAddModal(false);
   }
 
+  const [testResult, setTestResult] = useState<string>("測試結果將顯示在這裡...");
+
   function handleTestSelectors() {
     if (!currentPlatform?.url) {
       alert("請先輸入平台網址");
       return;
     }
-    alert(`正在測試 ${currentPlatform.name} 的 CSS 選擇器...\n\n這是模擬功能，實際應用中會：\n1. 打開平台網頁\n2. 驗證選擇器是否有效\n3. 回報測試結果`);
+    
+    // 檢查選擇器是否已配置
+    const selectors = currentPlatform.selectors;
+    const filledSelectors = Object.entries(selectors || {}).filter(([_, v]) => v && v.trim() !== "");
+    
+    if (filledSelectors.length === 0) {
+      setTestResult("❌ 測試失敗：尚未設定任何 CSS 選擇器，請先填寫選擇器後再測試");
+      return;
+    }
+    
+    // 顯示已配置的選擇器
+    const selectorList = filledSelectors.map(([key, value]) => `  • ${key}: ${value}`).join("\n");
+    
+    setTestResult(`正在連接 ${currentPlatform.name}...\n\n已配置選擇器：\n${selectorList}\n\n嘗試打開平台網頁驗證...`);
+    
+    // 嘗試打開平台網頁
+    try {
+      const newWindow = window.open(currentPlatform.url, '_blank');
+      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        // 如果彈出被阻止， fallback
+        window.location.href = currentPlatform.url;
+        setTestResult(prev => prev + "\n\n⚠️ 彈出窗口被阻止，頁面已跳轉");
+      } else {
+        setTestResult(prev => prev + "\n\n✅ 平台網頁已打開，請驗證選擇器是否正確");
+      }
+    } catch (e) {
+      window.location.href = currentPlatform.url;
+      setTestResult(prev => prev + "\n\n⚠️ 錯誤，已跳轉到平台網頁");
+    }
   }
 
   function handleOpenPlatform() {
@@ -338,7 +368,7 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
                 className="mt-3 p-3 rounded-lg text-xs"
                 style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-color)", color: "var(--text-secondary)" }}
               >
-                測試結果將顯示在這裡...
+                {testResult}
               </div>
             </div>
           </div>
