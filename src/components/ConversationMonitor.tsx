@@ -189,7 +189,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                           >
                             👤
                           </div>
-                          <div className="flex-1 max-w-lg">
+                          <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1.5">
                               <span className="text-xs font-medium" style={{ color: "var(--text-primary)" }}>
                                 {msg.sender}
@@ -199,11 +199,12 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                               </span>
                             </div>
                             <div
-                              className="p-4 rounded-2xl rounded-tl-sm text-sm shadow-md"
+                              className="p-4 rounded-2xl rounded-tl-sm text-sm shadow-md inline-block"
                               style={{ 
                                 background: "linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.1) 100%)", 
                                 color: "var(--text-primary)", 
                                 border: "1px solid rgba(99,102,241,0.3)",
+                                maxWidth: "85%"
                               }}
                             >
                               {msg.content}
@@ -328,7 +329,7 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                     ) : (
                       /* Outgoing message */
                       <div className="flex justify-end animate-slide-in">
-                        <div className="max-w-lg">
+                        <div>
                           <div className="flex items-center justify-end gap-2 mb-1.5">
                             <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
                               {formatTime(msg.timestamp)}
@@ -338,11 +339,12 @@ export default function ConversationMonitor({ store }: ConversationMonitorProps)
                             </span>
                           </div>
                           <div
-                            className="p-4 rounded-2xl rounded-tr-sm text-sm shadow-md"
+                            className="p-4 rounded-2xl rounded-tr-sm text-sm shadow-md inline-block"
                             style={{ 
                               background: "linear-gradient(135deg, rgba(34,197,94,0.15) 0%, rgba(63,185,80,0.1) 100%)", 
                               color: "var(--text-primary)", 
-                              border: "1px solid rgba(34,197,94,0.3)" 
+                              border: "1px solid rgba(34,197,94,0.3)",
+                              maxWidth: "85%"
                             }}
                           >
                             {msg.content}
