@@ -62,6 +62,13 @@
   - [x] 優化測試連接邏輯，檢查選擇器是否已配置
   - [x] 為 Facebook、Lazada、LINE 平台添加默認 CSS 選擇器
   - [x] 測試結果改為顯示在區域中而非彈出 alert
+- [x] **更新 Facebook Messenger 選擇器**
+  - [x] 根據用戶提供的選擇器更新 Facebook 的 CSS 選擇器
+  - [x] 新選擇器：messageList: .x1xzczws > div > .x1n2onr6
+  - [x] 新選擇器：messageItem: .x1xzczws > div > .x1n2onr6 > div
+  - [x] 新選擇器：inputBox: .x16sw7j7 > .x78zum5
+  - [x] 新選擇器：sendButton: .xsrhx6k
+  - [x] 新選擇器：unreadBadge: .x1n2onr6:nth-child(3)
 
 ## Current Structure
 
