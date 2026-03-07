@@ -7,8 +7,41 @@ interface RPAAutomationProps {
   store: AutoReplyStore;
 }
 
-const RPA_SCRIPT = `// ============================================================
+export default function RPAAutomation({ store }: RPAAutomationProps) {
+  const { platforms, rules, isMonitoring } = store;
+  const [activeScriptTab, setActiveScriptTab] = useState<"console" | "tampermonkey" | "puppeteer">("console");
+  const [copiedScript, setCopiedScript] = useState(false);
+  const [selectedPlatformId, setSelectedPlatformId] = useState<string>("");
+
+  const enabledPlatforms = platforms.filter(p => p.enabled);
+  const enabledRules = rules.filter(r => r.enabled);
+  
+  // 找出有設定選擇器的平台
+  const platformsWithSelectors = platforms.filter(p => p.selectors?.messageList || p.selectors?.messageItem || p.selectors?.inputBox);
+  
+  // 自動選擇第一個有選擇器的平台
+  const selectedPlatform = selectedPlatformId 
+    ? platforms.find(p => p.id === selectedPlatformId) 
+    : platformsWithSelectors[0] || platforms[0];
+  
+  // 確保 selectedPlatform 永遠有值
+  const safeSelectedPlatform = selectedPlatform || {
+    id: 'default',
+    platform: 'custom' as const,
+    name: '自訂平台',
+    enabled: true,
+    checkInterval: 5,
+    color: '#6366f1',
+    icon: '🌐',
+    selectors: {}
+  };
+
+  // 動態生成 RPA 腳本，使用選擇的平台選擇器
+  function generateDynamicRPA(platform: typeof platforms[0]) {
+    const selectors = platform.selectors || {};
+    return `// ============================================================
 // AutoReply Pro - RPA Browser Script v1.0
+// 平台: ${platform.name}
 // 將此腳本注入到目標網頁的瀏覽器控制台執行
 // 或使用 Tampermonkey / Greasemonkey 等擴充功能自動執行
 // ============================================================
@@ -21,17 +54,17 @@ const RPA_SCRIPT = `// =========================================================
     // 從 AutoReply Pro 系統匯出的規則
     rules: [], // 將從系統自動填入
     
-    // 平台選擇器（從平台設定頁面複製）
+    // 平台選擇器（從平台設定頁面配置）
     selectors: {
-      messageList: '.chat-list',
-      messageItem: '.chat-item',
-      inputBox: '.chat-input textarea',
-      sendButton: '.send-btn',
-      unreadBadge: '.unread-count',
+      messageList: '${selectors.messageList || '.chat-list'}',
+      messageItem: '${selectors.messageItem || '.chat-item'}',
+      inputBox: '${selectors.inputBox || '.chat-input textarea'}',
+      sendButton: '${selectors.sendButton || '.send-btn'}',
+      unreadBadge: '${selectors.unreadBadge || '.unread-count'}',
     },
     
     // 監控間隔（毫秒）
-    checkInterval: 5000,
+    checkInterval: ${platform.checkInterval * 1000 || 5000},
     
     // 是否啟用自動發送（false = 只顯示建議）
     autoSend: false,
@@ -39,6 +72,9 @@ const RPA_SCRIPT = `// =========================================================
     // 回覆前延遲（模擬人工輸入）
     replyDelay: 2000,
   };
+
+  console.log('[AutoReply Pro] 🤖 已啟動，監控間隔:', CONFIG.checkInterval + 'ms');
+  console.log('[AutoReply Pro] 📋 選擇器設定:', JSON.stringify(CONFIG.selectors, null, 2));
 
   // ---- 核心邏輯 ----
   let lastMessageCount = 0;
@@ -70,9 +106,9 @@ const RPA_SCRIPT = `// =========================================================
 
   function processVariables(template, context) {
     return template
-      .replace(/{{customer_name}}/g, context.customerName || '您')
-      .replace(/{{platform}}/g, context.platform || '')
-      .replace(/{{time}}/g, new Date().toLocaleTimeString('zh-TW'));
+      .replace(/\\{{customer_name}}\\/g, context.customerName || '您')
+      .replace(/\\{{platform}}\\/g, context.platform || '')
+      .replace(/\\{{time}}\\/g, new Date().toLocaleTimeString('zh-TW'));
   }
 
   function sendReply(inputSelector, sendSelector, message) {
@@ -82,7 +118,7 @@ const RPA_SCRIPT = `// =========================================================
         const sendBtn = document.querySelector(sendSelector);
         
         if (!input || !sendBtn) {
-          console.warn('[AutoReply] 找不到輸入框或發送按鈕');
+          console.warn('[AutoReply] 找不到輸入框或發送按鈕，選擇器:', inputSelector, sendSelector);
           resolve(false);
           return;
         }
@@ -109,7 +145,14 @@ const RPA_SCRIPT = `// =========================================================
     isRunning = true;
 
     try {
-      const messages = document.querySelectorAll(CONFIG.selectors.messageItem);
+      const messageListEl = document.querySelector(CONFIG.selectors.messageList);
+      if (!messageListEl) {
+        console.warn('[AutoReply] 找不到訊息列表，選擇器:', CONFIG.selectors.messageList);
+        return;
+      }
+      
+      const messages = messageListEl.querySelectorAll(CONFIG.selectors.messageItem);
+      console.log('[AutoReply] 檢測到', messages.length, '條訊息');
       
       if (messages.length > lastMessageCount) {
         const newMessages = Array.from(messages).slice(lastMessageCount);
@@ -132,7 +175,8 @@ const RPA_SCRIPT = `// =========================================================
               const finalResponse = processVariables(response, { platform: 'current' });
               
               console.log('[AutoReply] 🎯 匹配規則:', rule.name);
-              console.log('[AutoReply] 💬 建議回覆:', finalResponse);
+              console.log('[AutoReply] 💬 收到訊息:', text);
+              console.log('[AutoReply] 💡 建議回覆:', finalResponse);
 
               if (CONFIG.autoSend && rule.replyMode === 'auto') {
                 await sendReply(
@@ -157,7 +201,7 @@ const RPA_SCRIPT = `// =========================================================
   }
 
   // ---- 啟動監控 ----
-  console.log('[AutoReply Pro] 🤖 已啟動，監控間隔:', CONFIG.checkInterval + 'ms');
+  console.log('[AutoReply Pro] ✅ 腳本載入成功，請確保已設定關鍵字規則');
   
   const intervalId = setInterval(checkNewMessages, CONFIG.checkInterval);
   
@@ -169,32 +213,28 @@ const RPA_SCRIPT = `// =========================================================
   
   console.log('[AutoReply Pro] 輸入 autoReplyStop() 可停止監控');
 })();`;
+  }
 
-const TAMPERMONKEY_SCRIPT = `// ==UserScript==
-// @name         AutoReply Pro
+  // 動態生成 Tampermonkey 腳本
+  function generateTampermonkey(platform: typeof platforms[0]) {
+    const urlMatch = platform.url ? `// @match        ${platform.url}/*` : '';
+    return `// ==UserScript==
+// @name         AutoReply Pro - ${platform.name}
 // @namespace    https://autoreply.pro
 // @version      1.0
-// @description  跨平台自動化應答系統
+// @description  跨平台自動化應答系統 - ${platform.name}
 // @author       AutoReply Pro
-// @match        https://seller.shopee.tw/*
-// @match        https://sellercenter.lazada.com/*
-// @match        https://www.facebook.com/messages/*
-// @match        https://manager.line.biz/*
+${urlMatch}
 // @grant        none
 // ==/UserScript==
 
-/* 將上方的 RPA 腳本內容貼在這裡 */`;
-
-export default function RPAAutomation({ store }: RPAAutomationProps) {
-  const { platforms, rules, isMonitoring } = store;
-  const [activeScriptTab, setActiveScriptTab] = useState<"console" | "tampermonkey" | "puppeteer">("console");
-  const [copiedScript, setCopiedScript] = useState(false);
-
-  const enabledPlatforms = platforms.filter(p => p.enabled);
-  const enabledRules = rules.filter(r => r.enabled);
+/* 將上方 RPA 腳本內容貼在這裡 */`;
+  }
 
   function handleCopyScript() {
-    const script = activeScriptTab === "tampermonkey" ? TAMPERMONKEY_SCRIPT : RPA_SCRIPT;
+    const script = activeScriptTab === "tampermonkey" 
+      ? generateTampermonkey(safeSelectedPlatform) 
+      : generateDynamicRPA(safeSelectedPlatform);
     navigator.clipboard.writeText(script).then(() => {
       setCopiedScript(true);
       setTimeout(() => setCopiedScript(false), 2000);
@@ -406,6 +446,39 @@ export default function RPAAutomation({ store }: RPAAutomationProps) {
           </button>
         </div>
 
+        {/* Platform Selector */}
+        {platformsWithSelectors.length > 0 && (
+          <div className="mb-4">
+            <label className="text-xs font-medium mb-2 block" style={{ color: "var(--text-secondary)" }}>
+              選擇平台（腳本將使用該平台的 CSS 選擇器）
+            </label>
+            <select
+              value={safeSelectedPlatform.id || ""}
+              onChange={(e) => setSelectedPlatformId(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg text-sm"
+              style={{ 
+                background: "var(--bg-secondary)", 
+                border: "1px solid var(--border-color)",
+                color: "var(--text-primary)" 
+              }}
+            >
+              {platformsWithSelectors.map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.icon} {p.name} {p.selectors?.inputBox ? "✅" : "⚠️"}
+                </option>
+              ))}
+            </select>
+            {safeSelectedPlatform.selectors?.inputBox && (
+              <div className="mt-2 p-2 rounded-lg text-xs" style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>
+                <span style={{ color: "var(--accent-green)" }}>✓ 選擇器已設定</span>
+                <div className="mt-1" style={{ color: "var(--text-secondary)" }}>
+                  inputBox: <code className="px-1 rounded" style={{ background: "rgba(0,0,0,0.2)" }}>{safeSelectedPlatform.selectors.inputBox}</code>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Script Tabs */}
         <div className="flex gap-1 mb-4">
           {(["console", "tampermonkey", "puppeteer"] as const).map(tab => (
@@ -443,7 +516,7 @@ export default function RPAAutomation({ store }: RPAAutomationProps) {
                 overflowY: "auto",
               }}
             >
-              {RPA_SCRIPT}
+              {generateDynamicRPA(safeSelectedPlatform)}
             </pre>
           </div>
         )}
@@ -465,7 +538,7 @@ export default function RPAAutomation({ store }: RPAAutomationProps) {
                 fontFamily: "var(--font-geist-mono), monospace",
               }}
             >
-              {TAMPERMONKEY_SCRIPT}
+              {generateTampermonkey(safeSelectedPlatform)}
             </pre>
           </div>
         )}
