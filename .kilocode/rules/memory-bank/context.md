@@ -69,6 +69,14 @@
   - [x] 新選擇器：inputBox: .x16sw7j7 > .x78zum5
   - [x] 新選擇器：sendButton: .xsrhx6k
   - [x] 新選擇器：unreadBadge: .x1n2onr6:nth-child(3)
+- [x] **添加心跳 + 日誌系統** (2026-03-07)
+  - [x] 新增 LogEntry、HeartbeatStatus、SystemStatus 類型定義
+  - [x] 在 store.ts 中添加日誌功能 (addLog, clearLogs, getLogsByCategory)
+  - [x] 在 store.ts 中添加心跳功能 (startHeartbeat, stopHeartbeat, beat)
+  - [x] 新增 LogPanel 組件: 支援分類/平台篩選、搜尋、自動滾動
+  - [x] 在 Dashboard 顯示心跳計數、系統運行時間
+  - [x] 在 AppShell 整合心跳定時器，監控啟動時自動記錄日誌
+  - [x] 在側邊欄添加「系統日誌」頁籤
 
 ## Current Structure
 
@@ -120,3 +128,4 @@
 | 2026-03-06 | 重構對話監控頁面：加入離線模式狀態、對話窗口移至左側、右側新增可收合快捷語面板 |
 | 2026-03-06 | 對話監控頁面加入左側對話列表（可選擇不同聯絡人），對話詳情在右側 |
 | 2026-03-06 | 修復測試連接功能：完善邏輯檢查選擇器配置，並為所有平台添加默認CSS選擇器 |
+| 2026-03-07 | 添加心跳 + 日誌系統：新增 LogEntry、HeartbeatStatus 類型，新增 LogPanel 組件，Dashboard 顯示心跳計數和運行時間 |
