@@ -106,9 +106,9 @@ export default function RPAAutomation({ store }: RPAAutomationProps) {
 
   function processVariables(template, context) {
     return template
-      .replace(/\\{\\{customer_name\\}\\}\\/g, context.customerName || '您')
-      .replace(/\\{\\{platform\\}\\}\\/g, context.platform || '')
-      .replace(/\\{\\{time\\}\\}\\/g, new Date().toLocaleTimeString('zh-TW'));
+      .replace(/\\{\\{customer_name\\}\\}/g, context.customerName || '您')
+      .replace(/\\{\\{platform\\}\\}/g, context.platform || '')
+      .replace(/\\{\\{time\\}\\}/g, new Date().toLocaleTimeString('zh-TW'));
   }
 
   function sendReply(inputSelector, sendSelector, message) {
