@@ -57,6 +57,7 @@
   - [x] PlatformSettings 測試連接和開啟平台網頁按鈕功能修復
 - [x] **修復網頁被屏蔽問題**
   - [x] 使用 a 標籤模擬點擊打開網頁，取代 window.open() 避免被瀏覽器屏蔽
+  - [x] 完全移除 window.open，改用純剪貼簿複製網址（避免瀏覽器 ERR_BLOCKED_BY_RESPONSE 錯誤）
 - [x] **修復測試連接功能**
   - [x] 優化測試連接邏輯，檢查選擇器是否已配置
   - [x] 為 Facebook、Lazada、LINE 平台添加默認 CSS 選擇器
