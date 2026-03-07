@@ -74,7 +74,7 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
 
   function handleTestSelectors() {
     if (!currentPlatform?.url) {
-      alert("請先輸入平台網址");
+      setTestResult("請先輸入平台網址");
       return;
     }
     
@@ -90,43 +90,24 @@ export default function PlatformSettings({ store }: PlatformSettingsProps) {
     // 顯示已配置的選擇器
     const selectorList = filledSelectors.map(([key, value]) => `  • ${key}: ${value}`).join("\n");
     
-    setTestResult(`正在連接 ${currentPlatform.name}...\n\n已配置選擇器：\n${selectorList}\n\n嘗試打開平台網頁驗證...`);
+    setTestResult(`正在連接 ${currentPlatform.name}...\n\n已配置選擇器：\n${selectorList}\n\n網址：${currentPlatform.url}`);
     
-    // 嘗試打開平台網頁
-    try {
-      // 先嘗試複製網址到剪貼簿
-      navigator.clipboard.writeText(currentPlatform.url).then(() => {
-        setTestResult(prev => prev + "\n\n✅ 網址已複製到剪貼簿，請在瀏覽器新分頁貼上並打開驗證");
-      }).catch(() => {
-        // 如果剪貼簿失敗，嘗試打開
-        const newWindow = window.open(currentPlatform.url, '_blank');
-        if (!newWindow || newWindow.closed) {
-          setTestResult(prev => prev + "\n\n⚠️ 無法自動打開，請手動在瀏覽器新分頁輸入網址驗證");
-        } else {
-          setTestResult(prev => prev + "\n\n✅ 平台網頁已打開，請驗證選擇器是否正確");
-        }
-      });
-    } catch (e) {
-      setTestResult(prev => prev + "\n\n⚠️ 無法自動打開，請手動在瀏覽器新分頁輸入網址驗證");
-    }
+    // 只複製網址到剪貼簿，不嘗試打開
+    navigator.clipboard.writeText(currentPlatform.url).then(() => {
+      setTestResult(prev => prev + "\n\n✅ 網址已複製到剪貼簿，請在瀏覽器新分頁貼上並打開驗證");
+    }).catch(() => {
+      setTestResult(prev => prev + "\n\n⚠️ 無法複製網址，請手動複製以下網址：\n" + currentPlatform.url);
+    });
   }
 
   function handleOpenPlatform() {
     if (currentPlatform?.url) {
-      // 嘗試複製網址到剪貼簿
-      try {
-        navigator.clipboard.writeText(currentPlatform.url).then(() => {
-          setTestResult("✅ 網址已複製到剪貼簿，請自行在瀏覽器貼上並開啟\n\n" + currentPlatform.url);
-        }).catch(() => {
-          // 如果剪貼簿失敗，嘗試打開
-          const newWindow = window.open(currentPlatform.url, '_blank');
-          if (!newWindow || newWindow.closed) {
-            setTestResult("⚠️ 無法自動打開，請手動在瀏覽器輸入：\n" + currentPlatform.url);
-          }
-        });
-      } catch (e) {
-        setTestResult("⚠️ 無法自動打開，請手動在瀏覽器輸入：\n" + currentPlatform.url);
-      }
+      // 只複製網址到剪貼簿
+      navigator.clipboard.writeText(currentPlatform.url).then(() => {
+        setTestResult("✅ 網址已複製到剪貼簿，請自行在瀏覽器貼上並開啟：\n\n" + currentPlatform.url);
+      }).catch(() => {
+        setTestResult("⚠️ 無法複製網址，請手動複製：\n" + currentPlatform.url);
+      });
     } else {
       setTestResult("請先輸入平台網址");
     }
