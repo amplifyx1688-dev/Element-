@@ -150,6 +150,28 @@ export interface SystemStatus {
 }
 
 // ============================================================
+// Scraped Conversation Types
+// ============================================================
+
+export interface ScrapedConversation {
+  id: string;
+  customerName: string;
+  avatar?: string;
+  lastMessage: string;
+  timestamp: string;
+  unreadCount: number;
+  platform: Platform;
+}
+
+export interface ScrapedMessage {
+  id: string;
+  sender: string;
+  content: string;
+  timestamp: string;
+  isIncoming: boolean;
+}
+
+// ============================================================
 // Default / Sample Data
 // ============================================================
 
