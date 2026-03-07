@@ -113,6 +113,43 @@ export interface RPAConfig {
 }
 
 // ============================================================
+// Log Types
+// ============================================================
+
+export type LogLevel = "info" | "success" | "warning" | "error";
+export type LogCategory = "system" | "message" | "reply" | "rule" | "platform" | "rpa" | "error";
+
+export interface LogEntry {
+  id: string;
+  timestamp: string;
+  level: LogLevel;
+  category: LogCategory;
+  title: string;
+  message: string;
+  platform?: Platform;
+  details?: Record<string, unknown>;
+}
+
+// ============================================================
+// Heartbeat Types
+// ============================================================
+
+export interface HeartbeatStatus {
+  isAlive: boolean;
+  lastBeat: string | null;
+  intervalMs: number;
+  beats: number;
+  missedBeats: number;
+}
+
+export interface SystemStatus {
+  heartbeat: HeartbeatStatus;
+  uptime: number;
+  startTime: string;
+  version: string;
+}
+
+// ============================================================
 // Default / Sample Data
 // ============================================================
 

@@ -14,6 +14,7 @@ const APP_NAV_ITEMS = [
   { id: "rules", icon: "⚡", label: "關鍵字規則" },
   { id: "platforms", icon: "🌐", label: "平台設定" },
   { id: "rpa", icon: "🤖", label: "RPA 自動化" },
+  { id: "logs", icon: "📋", label: "系統日誌" },
 ] as const;
 
 export default function Sidebar({ store }: SidebarProps) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { AutoReplyStore } from "@/lib/store";
 import { PLATFORM_META } from "@/lib/types";
 
@@ -8,7 +9,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ store }: DashboardProps) {
-  const { stats, sessions, rules, platforms, isMonitoring, simulateIncoming } = store;
+  const { stats, sessions, rules, platforms, isMonitoring, simulateIncoming, heartbeat, logs } = store;
 
   const activePlatforms = platforms.filter(p => p.enabled);
   const activeRules = rules.filter(r => r.enabled);
@@ -30,6 +31,27 @@ export default function Dashboard({ store }: DashboardProps) {
     return d.toLocaleDateString("zh-TW");
   }
 
+  function formatUptime(seconds: number) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  }
+
+  // 計算運行時間 - 使用 useEffect 定期更新
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => {
+    // 初始計算
+    setUptimeSeconds(Math.floor((Date.now() - new Date(store.startTime).getTime()) / 1000));
+    
+    // 每秒更新
+    const interval = setInterval(() => {
+      setUptimeSeconds(Math.floor((Date.now() - new Date(store.startTime).getTime()) / 1000));
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [store.startTime]);
+
   return (
     <div className="p-6 space-y-6 animate-fade-in">
       {/* Header */}
@@ -41,6 +63,28 @@ export default function Dashboard({ store }: DashboardProps) {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {/* 心跳狀態 */}
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
+            style={{
+              background: heartbeat.isAlive ? "rgba(34, 197, 94, 0.15)" : "rgba(148, 163, 184, 0.1)",
+              color: heartbeat.isAlive ? "var(--accent-green)" : "var(--text-secondary)",
+              border: `1px solid ${heartbeat.isAlive ? "rgba(34, 197, 94, 0.3)" : "rgba(148, 163, 184, 0.2)"}`,
+            }}
+          >
+            <div
+              className="w-2 h-2 rounded-full animate-pulse-dot"
+              style={{ background: heartbeat.isAlive ? "var(--accent-green)" : "#64748b" }}
+            />
+            <span className="hidden sm:inline">
+              {heartbeat.isAlive ? `❤️ 心跳 ${heartbeat.beats}` : "❤️ 心跳停止"}
+            </span>
+            <span className="sm:hidden">
+              {heartbeat.isAlive ? `❤️ ${heartbeat.beats}` : "❤️ -"}
+            </span>
+          </div>
+
+          {/* 系統狀態 */}
           <div
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
             style={{
@@ -55,6 +99,19 @@ export default function Dashboard({ store }: DashboardProps) {
             />
             {isMonitoring ? "系統運行中" : "系統已停止"}
           </div>
+
+          {/* 運行時間 */}
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-mono"
+            style={{
+              background: "rgba(59, 130, 246, 0.1)",
+              color: "var(--accent-blue)",
+              border: "1px solid rgba(59, 130, 246, 0.3)",
+            }}
+          >
+            ⏱️ {formatUptime(uptimeSeconds)}
+          </div>
+
           <button
             onClick={simulateIncoming}
             className="btn-secondary text-sm"

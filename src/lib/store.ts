@@ -10,6 +10,11 @@ import {
   DEFAULT_PLATFORMS,
   DEFAULT_RULES,
   SAMPLE_CONVERSATIONS,
+  LogEntry,
+  LogLevel,
+  LogCategory,
+  HeartbeatStatus,
+  SystemStatus,
 } from "./types";
 
 // ============================================================
@@ -23,8 +28,24 @@ export function useAutoReplyStore() {
   const [sessions, setSessions] = useState<AutoReplySession[]>(SAMPLE_CONVERSATIONS);
   const [selectedSession, setSelectedSession] = useState<AutoReplySession | null>(SAMPLE_CONVERSATIONS[0] || null);
   const [isMonitoring, setIsMonitoring] = useState(false);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "conversations" | "rules" | "platforms" | "rpa">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "conversations" | "rules" | "platforms" | "rpa" | "logs">("dashboard");
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | "all">("all");
+  
+  // 日誌系統
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [maxLogs, setMaxLogs] = useState(500);
+  
+  // 心跳系統
+  const [heartbeat, setHeartbeat] = useState<HeartbeatStatus>({
+    isAlive: false,
+    lastBeat: null,
+    intervalMs: 5000,
+    beats: 0,
+    missedBeats: 0,
+  });
+  
+  // 系統運行時間
+  const [startTime] = useState(new Date().toISOString());
 
   const stats: SystemStats = {
     totalReplied: rules.reduce((sum, r) => sum + r.stats.triggered, 0),
@@ -207,6 +228,94 @@ export function useAutoReplyStore() {
     );
   }, []);
 
+  // ============================================================
+  // 日誌功能
+  // ============================================================
+  
+  const addLog = useCallback((level: LogLevel, category: LogCategory, title: string, message: string, platform?: Platform, details?: Record<string, unknown>) => {
+    const newLog: LogEntry = {
+      id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: new Date().toISOString(),
+      level,
+      category,
+      title,
+      message,
+      platform,
+      details,
+    };
+    setLogs(prev => {
+      const updated = [newLog, ...prev];
+      return updated.slice(0, maxLogs);
+    });
+  }, [maxLogs]);
+  
+  const clearLogs = useCallback(() => {
+    setLogs([]);
+  }, []);
+  
+  const getLogsByCategory = useCallback((category: LogCategory) => {
+    return logs.filter(log => log.category === category);
+  }, [logs]);
+  
+  const getLogsByPlatform = useCallback((platform: Platform) => {
+    return logs.filter(log => log.platform === platform);
+  }, [logs]);
+  
+  // ============================================================
+  // 心跳功能
+  // ============================================================
+  
+  const startHeartbeat = useCallback((intervalMs: number = 5000) => {
+    setHeartbeat(prev => ({
+      ...prev,
+      isAlive: true,
+      intervalMs,
+      lastBeat: new Date().toISOString(),
+    }));
+    addLog("info", "system", "心跳系統啟動", `心跳間隔: ${intervalMs}ms`);
+  }, [addLog]);
+  
+  const stopHeartbeat = useCallback(() => {
+    setHeartbeat(prev => ({
+      ...prev,
+      isAlive: false,
+    }));
+    addLog("info", "system", "心跳系統停止", "監控已停止");
+  }, [addLog]);
+  
+  const beat = useCallback(() => {
+    const now = new Date().toISOString();
+    setHeartbeat(prev => {
+      // 檢查是否錯過心跳
+      let missedBeats = prev.missedBeats;
+      if (prev.lastBeat) {
+        const lastTime = new Date(prev.lastBeat).getTime();
+        const currentTime = Date.now();
+        const expectedBeats = Math.floor((currentTime - lastTime) / prev.intervalMs);
+        if (expectedBeats > 1) {
+          missedBeats += expectedBeats - 1;
+        }
+      }
+      return {
+        ...prev,
+        lastBeat: now,
+        beats: prev.beats + 1,
+        missedBeats,
+      };
+    });
+  }, []);
+  
+  const getSystemStatus = useCallback((): SystemStatus => {
+    const uptimeMs = new Date().getTime() - new Date(startTime).getTime();
+    const uptimeSeconds = Math.floor(uptimeMs / 1000);
+    return {
+      heartbeat,
+      uptime: uptimeSeconds,
+      startTime,
+      version: "1.0.0",
+    };
+  }, [heartbeat, startTime]);
+
   return {
     platforms,
     rules,
@@ -231,6 +340,20 @@ export function useAutoReplyStore() {
     ignoreMessage,
     sendMessage,
     simulateIncoming,
+    // 日誌系統
+    logs,
+    addLog,
+    clearLogs,
+    getLogsByCategory,
+    getLogsByPlatform,
+    // 心跳系統
+    heartbeat,
+    startHeartbeat,
+    stopHeartbeat,
+    beat,
+    getSystemStatus,
+    // 系統時間
+    startTime,
   };
 }
 
