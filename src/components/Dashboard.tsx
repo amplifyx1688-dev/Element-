@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AutoReplyStore } from "@/lib/store";
 import { PLATFORM_META } from "@/lib/types";
 
@@ -71,10 +71,7 @@ export default function Dashboard({ store }: DashboardProps) {
               border: `1px solid ${heartbeat.isAlive ? "rgba(34, 197, 94, 0.3)" : "rgba(148, 163, 184, 0.2)"}`,
             }}
           >
-            <div
-              className="w-2 h-2 rounded-full animate-pulse-dot"
-              style={{ background: heartbeat.isAlive ? "var(--accent-green)" : "#64748b" }}
-            />
+            <HeartbeatVisual isAlive={heartbeat.isAlive} beats={heartbeat.beats} />
             <span className="hidden sm:inline">
               {heartbeat.isAlive ? `❤️ 心跳 ${heartbeat.beats}` : "❤️ 心跳停止"}
             </span>
@@ -359,6 +356,41 @@ function StatCard({
       <div className="text-xs" style={{ color: "var(--text-secondary)" }}>
         {sub}
       </div>
+    </div>
+  );
+}
+
+// 心跳視覺化組件 - 顯示心跳節奏
+// 使用 CSS 動畫在 isAlive 為 true 時持續顯示心跳節奏
+function HeartbeatVisual({ isAlive, beats }: { isAlive: boolean; beats: number }) {
+  if (!isAlive) {
+    return (
+      <div
+        className="w-3 h-3 rounded-full"
+        style={{ background: "#64748b" }}
+      />
+    );
+  }
+  
+  return (
+    <div className="relative">
+      {/* 節奏圓點 - 使用 CSS 動畫 */}
+      <div
+        className="w-3 h-3 rounded-full"
+        style={{
+          background: "var(--accent-green)",
+          animation: "heartbeat-beat 2s ease-in-out infinite",
+          boxShadow: "0 0 8px rgba(34, 197, 94, 0.5)",
+        }}
+      />
+      {/* 節奏波紋 */}
+      <div
+        className="absolute inset-0 rounded-full"
+        style={{ 
+          background: "rgba(34, 197, 94, 0.3)",
+          animation: "heartbeat-ripple 2s ease-in-out infinite",
+        }}
+      />
     </div>
   );
 }
