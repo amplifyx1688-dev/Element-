@@ -77,6 +77,10 @@
   - [x] 在 Dashboard 顯示心跳計數、系統運行時間
   - [x] 在 AppShell 整合心跳定時器，監控啟動時自動記錄日誌
   - [x] 在側邊欄添加「系統日誌」頁籤
+- [x] **修復 RPA 腳本正則表達式語法錯誤** (2026-03-07)
+  - [x] 修復 processVariables 函數中的 replace 語法：/\\{{name}}\\/g → /\\{\\{name\\}\\}\\/g
+  - [x] 修復 Dashboard.tsx 缺少 uptimeSeconds 狀態宣告的問題
+  - [x] 移除 useEffect 中直接呼叫 setState 的 ESLint 警告
 
 ## Current Structure
 
@@ -129,3 +133,4 @@
 | 2026-03-06 | 對話監控頁面加入左側對話列表（可選擇不同聯絡人），對話詳情在右側 |
 | 2026-03-06 | 修復測試連接功能：完善邏輯檢查選擇器配置，並為所有平台添加默認CSS選擇器 |
 | 2026-03-07 | 添加心跳 + 日誌系統：新增 LogEntry、HeartbeatStatus 類型，新增 LogPanel 組件，Dashboard 顯示心跳計數和運行時間 |
+| 2026-03-07 | 修復 RPA 腳本正則表達式語法錯誤：processVariables 函數中的 replace 語法修復，Dashboard 運行時間狀態修復 |
