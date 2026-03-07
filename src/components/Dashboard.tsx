@@ -10,6 +10,9 @@ interface DashboardProps {
 
 export default function Dashboard({ store }: DashboardProps) {
   const { stats, sessions, rules, platforms, isMonitoring, simulateIncoming, heartbeat, logs } = store;
+  
+  // 運行時間狀態
+  const [uptimeSeconds, setUptimeSeconds] = useState(0);
 
   const activePlatforms = platforms.filter(p => p.enabled);
   const activeRules = rules.filter(r => r.enabled);
@@ -39,12 +42,8 @@ export default function Dashboard({ store }: DashboardProps) {
   }
 
   // 計算運行時間 - 使用 useEffect 定期更新
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    // 初始計算
-    setUptimeSeconds(Math.floor((Date.now() - new Date(store.startTime).getTime()) / 1000));
-    
-    // 每秒更新
+    // 每秒更新運行時間
     const interval = setInterval(() => {
       setUptimeSeconds(Math.floor((Date.now() - new Date(store.startTime).getTime()) / 1000));
     }, 1000);
