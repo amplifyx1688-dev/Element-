@@ -81,6 +81,11 @@
   - [x] 修復 processVariables 函數中的 replace 語法：/\\{{name}}\\/g → /\\{\\{name\\}\\}\\/g
   - [x] 修復 Dashboard.tsx 缺少 uptimeSeconds 狀態宣告的問題
   - [x] 移除 useEffect 中直接呼叫 setState 的 ESLint 警告
+- [x] **增強日誌系統 - 模擬訊息檢測** (2026-03-07)
+  - [x] 監控啟動時自動產生模擬買家訊息日誌（每 8-15 秒隨機產生）
+  - [x] 模擬訊息包含：買家名稱、訊息內容、平台來源
+  - [x] 30% 機率觸發自動回覆並記錄日誌
+  - [x] 監控停止時自動清除模擬訊息定時器
 
 ## Current Structure
 
